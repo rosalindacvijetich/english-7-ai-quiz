@@ -5,201 +5,822 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>English 7 Revision Quiz</title>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f4f7fb; color: #1f2937; padding: 18px; }
-    .app { max-width: 980px; margin: 0 auto; background: white; border-radius: 22px; box-shadow: 0 12px 40px rgba(15,23,42,.12); overflow: hidden; }
-    header { padding: 24px; background: #eff6ff; border-bottom: 1px solid #dbe3ef; }
-    .badge { display: inline-block; padding: 5px 10px; border-radius: 999px; background: #dcfce7; color: #166534; font-size: .8rem; font-weight: 700; margin-bottom: 8px; }
-    h1 { margin: 0 0 8px; font-size: 1.8rem; }
-    .subtitle { margin: 0; color: #6b7280; line-height: 1.45; }
-    main { padding: 20px 24px 24px; }
-    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; justify-content: space-between; }
-    .topic-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
-    button { border: none; border-radius: 999px; padding: 10px 16px; font-weight: 700; cursor: pointer; }
-    .topic { background: #e5edff; color: #1e3a8a; }
-    .topic.active { background: #2563eb; color: white; }
-    .small { background: #f3f4f6; color: #374151; }
-    .question-card { border: 1px solid #dbe3ef; border-radius: 18px; padding: 18px; background: white; }
-    .topic-label { color: #6b7280; font-weight: 700; font-size: .9rem; margin-bottom: 8px; }
-    .question { font-size: 1.2rem; font-weight: 800; line-height: 1.4; margin-bottom: 14px; }
-    .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
-    .answer { border-radius: 14px; background: #f8fafc; border: 1px solid #dbe3ef; color: #1f2937; padding: 12px; text-align: left; font-weight: 650; }
-    .answer.correct { background: #dcfce7; border-color: #86efac; color: #15803d; }
-    .answer.wrong { background: #fee2e2; border-color: #fecaca; color: #b91c1c; }
-    .feedback { min-height: 44px; padding: 12px; border-radius: 14px; background: #f9fafb; border: 1px dashed #dbe3ef; color: #6b7280; line-height: 1.45; }
-    .feedback.ok { color: #15803d; background: #f0fdf4; border-color: #bbf7d0; }
-    .feedback.bad { color: #b91c1c; background: #fef2f2; border-color: #fecaca; }
-    .bottom-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-top: 16px; flex-wrap: wrap; }
-    .score { font-weight: 800; }
-    .progress { height: 12px; background: #e5e7eb; border-radius: 999px; overflow: hidden; flex: 1 1 180px; max-width: 360px; }
-    .bar { height: 100%; width: 0%; background: #2563eb; transition: width .2s ease; }
-    .note { margin-top: 16px; font-size: .9rem; color: #6b7280; background: #f8fafc; border: 1px solid #dbe3ef; border-radius: 14px; padding: 12px; }
-    @media (max-width: 680px) { .answers { grid-template-columns: 1fr; } h1 { font-size: 1.45rem; } main, header { padding-left: 16px; padding-right: 16px; } }
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --border: #d1d5db;
+      --ok: #15803d;
+      --ok-bg: #dcfce7;
+      --bad: #b91c1c;
+      --bad-bg: #fee2e2;
+      --warning: #fef3c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 45%, #ecfeff 100%);
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 14px 40px;
+    }
+
+    header {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 42px);
+      color: #0f172a;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: var(--warning);
+      border-radius: 12px;
+      border: 1px solid #fde68a;
+      font-size: 15px;
+    }
+
+    .controls {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .control-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.15s ease-in-out;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+    }
+
+    button.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .progress-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 18px;
+      display: grid;
+      gap: 8px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-weight: 700;
+    }
+
+    .bar {
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.25s ease;
+    }
+
+    .quiz-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--primary-soft);
+      color: #1d4ed8;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .question {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 800;
+      margin: 6px 0 18px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: #fff;
+      font-size: 17px;
+      font-weight: 650;
+    }
+
+    .option.correct {
+      border-color: #22c55e;
+      background: var(--ok-bg);
+      color: #064e3b;
+    }
+
+    .option.wrong {
+      border-color: #ef4444;
+      background: var(--bad-bg);
+      color: #7f1d1d;
+    }
+
+    .review {
+      display: none;
+      padding: 14px;
+      border-radius: 14px;
+      margin: 8px 0 16px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .review.correct {
+      display: block;
+      background: var(--ok-bg);
+      color: #064e3b;
+      border-color: #86efac;
+    }
+
+    .review.wrong {
+      display: block;
+      background: var(--bad-bg);
+      color: #7f1d1d;
+      border-color: #fecaca;
+    }
+
+    .next-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+
+    .secondary {
+      background: #f8fafc;
+      color: var(--text);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .finish {
+      text-align: center;
+      padding: 22px;
+    }
+
+    .score-big {
+      font-size: clamp(34px, 6vw, 58px);
+      font-weight: 900;
+      color: var(--primary);
+      margin: 10px 0;
+    }
+
+    .topic-summary {
+      display: grid;
+      gap: 8px;
+      margin: 18px 0;
+      text-align: left;
+    }
+
+    .topic-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .quiz-card, header, .controls, .progress-card { padding: 16px; }
+      .option { font-size: 16px; }
+      .next-row { align-items: stretch; }
+      .next-row button { width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <div class="app">
+  <div class="wrap">
     <header>
-      <div class="badge">AI-assisted Moodle activity</div>
       <h1>English 7 Revision Quiz</h1>
-      <p class="subtitle">Practise Past Simple, Present Perfect, since/for, and countable/uncountable nouns. Choose an answer and read the feedback.</p>
-    </header>
-    <main>
-      <div class="controls">
-        <div class="topic-buttons">
-          <button class="topic active" data-topic="all">All</button>
-          <button class="topic" data-topic="tenses">Tenses</button>
-          <button class="topic" data-topic="sincefor">Since / For</button>
-          <button class="topic" data-topic="nouns">Nouns</button>
-        </div>
-        <button class="small" id="resetBtn">Reset score</button>
+      <p class="subtitle">Past Simple vs. Present Perfect • Countable vs. Uncountable nouns • Since vs. For</p>
+      <div class="note">
+        Read slowly. Choose one answer. After each answer, you will see a short explanation.
+        This quiz is made with clear written instructions and does not use audio.
       </div>
-      <section class="question-card">
-        <div class="topic-label" id="topicLabel">Topic</div>
-        <div class="question" id="questionText">Question text</div>
-        <div class="answers" id="answers"></div>
-        <div class="feedback" id="feedback">Choose an answer to get feedback.</div>
-        <div class="bottom-row">
-          <div class="score" id="scoreText">Score: 0 / 0</div>
-          <div class="progress"><div class="bar" id="bar"></div></div>
-          <button class="topic active" id="nextBtn">Next question</button>
-        </div>
-      </section>
-      <div class="note">This activity was created with the help of an AI tool and reviewed before use. It can be added to Moodle as an HTML file and used for independent revision.</div>
+    </header>
+
+    <section class="controls">
+      <div class="control-title">Choose topic:</div>
+      <div class="btn-row">
+        <button class="topic-btn active" data-topic="all">All questions (30)</button>
+        <button class="topic-btn" data-topic="tenses">Past Simple vs. Present Perfect (10)</button>
+        <button class="topic-btn" data-topic="nouns">Countable vs. Uncountable nouns (10)</button>
+        <button class="topic-btn" data-topic="sincefor">Since vs. For (10)</button>
+      </div>
+    </section>
+
+    <section class="progress-card">
+      <div class="progress-info">
+        <span id="progressText">Question 1 / 30</span>
+        <span id="scoreText">Score: 0</span>
+      </div>
+      <div class="bar"><div class="bar-fill" id="barFill"></div></div>
+    </section>
+
+    <main class="quiz-card" id="quizCard">
+      <div class="tag" id="topicTag"></div>
+      <div class="question" id="questionText"></div>
+      <div class="options" id="options"></div>
+      <div class="review" id="reviewBox"></div>
+      <div class="next-row">
+        <span class="small" id="helperText">Select one answer.</span>
+        <button class="primary" id="nextBtn" disabled>Next question</button>
+      </div>
     </main>
+
+    <footer>
+      Made as a simple HTML, CSS and JavaScript learning activity.
+    </footer>
   </div>
 
 <script>
-const questions = [
-  { topic: "tenses", topicName: "Past Simple / Present Perfect", q: "Choose the correct sentence.", answers: [
-    { text: "I have seen him yesterday.", correct: false, feedback: "Not quite. With a finished time expression such as yesterday, we use Past Simple." },
-    { text: "I saw him yesterday.", correct: true, feedback: "Correct. We use Past Simple with finished time expressions such as yesterday." },
-    { text: "I seen him yesterday.", correct: false, feedback: "Not quite. The Past Simple form is saw." },
-    { text: "I have saw him yesterday.", correct: false, feedback: "Not quite. Present Perfect uses have/has + past participle, but yesterday needs Past Simple." }
-  ]},
-  { topic: "tenses", topicName: "Past Simple / Present Perfect", q: "Choose the correct sentence.", answers: [
-    { text: "She has finished her homework.", correct: true, feedback: "Correct. With she, we use has + past participle." },
-    { text: "She have finished her homework.", correct: false, feedback: "Not quite. With she, use has, not have." },
-    { text: "She finished her homework since Monday.", correct: false, feedback: "Not quite. Since connects a starting point to now, so Present Perfect is usually needed." },
-    { text: "She has finish her homework.", correct: false, feedback: "Not quite. Use the past participle: finished." }
-  ]},
-  { topic: "tenses", topicName: "Past Simple / Present Perfect", q: "Which sentence uses Present Perfect correctly?", answers: [
-    { text: "Have you ever eaten sushi?", correct: true, feedback: "Correct. Ever is often used with Present Perfect, and eaten is the past participle." },
-    { text: "Have you ever ate sushi?", correct: false, feedback: "Not quite. Use eaten, not ate, after have." },
-    { text: "Did you ever eaten sushi?", correct: false, feedback: "Not quite. With did, use the base form: eat." },
-    { text: "You have ever eat sushi?", correct: false, feedback: "Not quite. The correct question form is: Have you ever eaten...?" }
-  ]},
-  { topic: "sincefor", topicName: "Since / For", q: "I have lived here ___ 2018.", answers: [
-    { text: "since", correct: true, feedback: "Correct. 2018 is the starting point, so we use since." },
-    { text: "for", correct: false, feedback: "Not quite. Use for with a length of time, for example for five years." }
-  ]},
-  { topic: "sincefor", topicName: "Since / For", q: "She has studied English ___ three years.", answers: [
-    { text: "since", correct: false, feedback: "Not quite. Three years is a duration, so we use for." },
-    { text: "for", correct: true, feedback: "Correct. Three years is a length of time, so we use for." }
-  ]},
-  { topic: "sincefor", topicName: "Since / For", q: "He has played football ___ he was ten.", answers: [
-    { text: "since", correct: true, feedback: "Correct. 'He was ten' is the starting point." },
-    { text: "for", correct: false, feedback: "Not quite. Use since with a starting point in the past." }
-  ]},
-  { topic: "nouns", topicName: "Countable / Uncountable nouns", q: "Is “water” countable or uncountable?", answers: [
-    { text: "Countable", correct: false, feedback: "Not quite. We do not usually count water as one water, two waters." },
-    { text: "Uncountable", correct: true, feedback: "Correct. Water is uncountable. We can say some water or how much water." }
-  ]},
-  { topic: "nouns", topicName: "Countable / Uncountable nouns", q: "Choose the correct word: How ___ apples are there?", answers: [
-    { text: "much", correct: false, feedback: "Not quite. Apples are countable, so we use many." },
-    { text: "many", correct: true, feedback: "Correct. Apples are countable, so we use How many." }
-  ]},
-  { topic: "nouns", topicName: "Countable / Uncountable nouns", q: "Choose the correct word: I have ___ apple.", answers: [
-    { text: "a", correct: false, feedback: "Not quite. Apple starts with a vowel sound, so we use an." },
-    { text: "an", correct: true, feedback: "Correct. We use an before a vowel sound: an apple." },
-    { text: "some", correct: false, feedback: "Not quite. For one singular countable noun, use a/an." }
-  ]},
-  { topic: "nouns", topicName: "Countable / Uncountable nouns", q: "Choose the correct word: She bought ___ bread.", answers: [
-    { text: "a", correct: false, feedback: "Not quite. Bread is usually uncountable." },
-    { text: "an", correct: false, feedback: "Not quite. An is used before singular countable nouns with a vowel sound." },
-    { text: "some", correct: true, feedback: "Correct. Bread is usually uncountable, so we say some bread." }
-  ]}
+const allQuestions = [
+  // Past Simple vs Present Perfect
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "I have seen that film yesterday.", correct: false, review: "With yesterday, we use Past Simple: I saw that film yesterday." },
+      { text: "I saw that film yesterday.", correct: true, review: "Correct. Yesterday is a finished time, so we use Past Simple." },
+      { text: "I see that film yesterday.", correct: false, review: "Yesterday is finished time. Use Past Simple: saw." },
+      { text: "I have saw that film yesterday.", correct: false, review: "Present Perfect needs have/has + past participle, but yesterday needs Past Simple here." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "She has finished her homework.", correct: true, review: "Correct. The action is connected to now: the homework is finished now." },
+      { text: "She finished her homework now.", correct: false, review: "Now is connected to the present. Present Perfect is better here: has finished." },
+      { text: "She has finish her homework.", correct: false, review: "After has, use the past participle: finished." },
+      { text: "She finish her homework.", correct: false, review: "This sentence needs the correct verb form. Here: has finished." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Complete: We ____ to London three years ago.",
+    options: [
+      { text: "have been", correct: false, review: "Three years ago is finished time, so use Past Simple." },
+      { text: "were", correct: false, review: "Were is possible in other sentences, but not for going to London here." },
+      { text: "went", correct: true, review: "Correct. Three years ago is finished time, so we use Past Simple: went." },
+      { text: "have went", correct: false, review: "Have went is not correct. The past participle is gone, but ago needs Past Simple." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Complete: I ____ my keys. I cannot open the door.",
+    options: [
+      { text: "lost", correct: false, review: "Past Simple is possible with a finished time, but here the result is important now." },
+      { text: "have lost", correct: true, review: "Correct. The past action has a result now: I cannot open the door." },
+      { text: "lose", correct: false, review: "This is the base form. The sentence needs Present Perfect here." },
+      { text: "have lose", correct: false, review: "After have, use the past participle: lost." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Which time expression usually goes with Past Simple?",
+    options: [
+      { text: "yesterday", correct: true, review: "Correct. Yesterday is a finished time expression, so it usually goes with Past Simple." },
+      { text: "ever", correct: false, review: "Ever is usually used with Present Perfect in questions about life experience." },
+      { text: "already", correct: false, review: "Already is often used with Present Perfect." },
+      { text: "just", correct: false, review: "Just is often used with Present Perfect for a recent action." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "Have you ever tried sushi?", correct: true, review: "Correct. Ever asks about life experience, so we use Present Perfect." },
+      { text: "Did you ever tried sushi?", correct: false, review: "After did, use the base form: try. For life experience, Present Perfect is better." },
+      { text: "Have you ever try sushi?", correct: false, review: "After have, use the past participle: tried." },
+      { text: "Did you ever trying sushi?", correct: false, review: "After did, use the base form. This form is not correct." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Complete: Marko ____ his grandma last weekend.",
+    options: [
+      { text: "has visited", correct: false, review: "Last weekend is a finished time, so use Past Simple." },
+      { text: "visited", correct: true, review: "Correct. Last weekend is finished time, so we use Past Simple." },
+      { text: "has visit", correct: false, review: "After has, use a past participle, but last weekend needs Past Simple." },
+      { text: "visits", correct: false, review: "Visits is Present Simple, used for habits and routines." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Complete: They ____ already ____ the exercise.",
+    options: [
+      { text: "have / done", correct: true, review: "Correct. Already often goes with Present Perfect: have done." },
+      { text: "did / done", correct: false, review: "Did is used with the base form, not done." },
+      { text: "have / did", correct: false, review: "After have, use the past participle: done." },
+      { text: "do / did", correct: false, review: "This does not form Present Perfect." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "I have eaten breakfast at 7 o'clock yesterday.", correct: false, review: "At 7 o'clock yesterday is a finished time, so use Past Simple." },
+      { text: "I ate breakfast at 7 o'clock yesterday.", correct: true, review: "Correct. The exact finished time tells us to use Past Simple." },
+      { text: "I have ate breakfast at 7 o'clock yesterday.", correct: false, review: "Have ate is not correct. Also, yesterday needs Past Simple." },
+      { text: "I eat breakfast at 7 o'clock yesterday.", correct: false, review: "Eat is Present Simple. Yesterday needs Past Simple: ate." }
+    ]
+  },
+  {
+    topic: "tenses",
+    tag: "Past Simple vs. Present Perfect",
+    question: "Complete: My sister ____ just ____ home.",
+    options: [
+      { text: "has / come", correct: true, review: "Correct. Just often shows a recent action with a result now." },
+      { text: "did / come", correct: false, review: "Did come can be used in some questions or negatives, but not in this sentence." },
+      { text: "has / came", correct: false, review: "After has, use the past participle: come." },
+      { text: "is / come", correct: false, review: "This is not the correct form for Present Perfect." }
+    ]
+  },
+
+  // Countable vs Uncountable nouns
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Which noun is countable?",
+    options: [
+      { text: "water", correct: false, review: "Water is uncountable. We say some water or a glass of water." },
+      { text: "rice", correct: false, review: "Rice is uncountable. We say some rice." },
+      { text: "apple", correct: true, review: "Correct. Apple is countable: one apple, two apples." },
+      { text: "milk", correct: false, review: "Milk is uncountable. We say some milk or a bottle of milk." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Choose the correct question.",
+    options: [
+      { text: "How many water do you drink?", correct: false, review: "Water is uncountable, so use how much." },
+      { text: "How much water do you drink?", correct: true, review: "Correct. Water is uncountable, so we use how much." },
+      { text: "How many waters do you drink?", correct: false, review: "Water is usually uncountable in this meaning." },
+      { text: "How much apples do you eat?", correct: false, review: "Apples are countable, so use how many." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Complete: There are ____ bananas on the table.",
+    options: [
+      { text: "some", correct: true, review: "Correct. Bananas are countable plural, and some can be used in positive sentences." },
+      { text: "any", correct: false, review: "Any is often used in questions and negatives. This is a positive sentence." },
+      { text: "much", correct: false, review: "Much is used with uncountable nouns, not countable plural nouns." },
+      { text: "a", correct: false, review: "A is used with one singular countable noun, not bananas." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Complete: I need ____ information.",
+    options: [
+      { text: "an", correct: false, review: "Information is uncountable, so we do not use an." },
+      { text: "a", correct: false, review: "Information is uncountable, so we do not use a." },
+      { text: "some", correct: true, review: "Correct. Information is uncountable, so we can say some information." },
+      { text: "many", correct: false, review: "Many is used with countable plural nouns." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Which sentence is correct?",
+    options: [
+      { text: "There is a milk in the fridge.", correct: false, review: "Milk is uncountable. Say: There is some milk." },
+      { text: "There are much milk in the fridge.", correct: false, review: "Milk is uncountable and singular in grammar: There is some milk." },
+      { text: "There is some milk in the fridge.", correct: true, review: "Correct. Milk is uncountable, so we use some milk." },
+      { text: "There are many milk in the fridge.", correct: false, review: "Many is used with countable plural nouns, not milk." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Choose the correct question.",
+    options: [
+      { text: "How much students are in your class?", correct: false, review: "Students are countable plural, so use how many." },
+      { text: "How many students are in your class?", correct: true, review: "Correct. Students are countable, so we use how many." },
+      { text: "How much student is in your class?", correct: false, review: "Student is countable, and this question asks about a number of students." },
+      { text: "How many student are in your class?", correct: false, review: "After how many, use the plural form: students." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Which noun is uncountable?",
+    options: [
+      { text: "book", correct: false, review: "Book is countable: one book, two books." },
+      { text: "chair", correct: false, review: "Chair is countable: one chair, two chairs." },
+      { text: "homework", correct: true, review: "Correct. Homework is uncountable in English. We say some homework." },
+      { text: "pencil", correct: false, review: "Pencil is countable: one pencil, two pencils." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Complete: There isn't ____ sugar left.",
+    options: [
+      { text: "many", correct: false, review: "Sugar is uncountable, so do not use many." },
+      { text: "a", correct: false, review: "Sugar is uncountable, so do not use a." },
+      { text: "any", correct: true, review: "Correct. Any is often used in negative sentences with uncountable nouns." },
+      { text: "an", correct: false, review: "An is used with singular countable nouns beginning with a vowel sound." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "I have three advice for you.", correct: false, review: "Advice is uncountable. Say: some advice or three pieces of advice." },
+      { text: "I have three pieces of advice for you.", correct: true, review: "Correct. Advice is uncountable, so we count pieces of advice." },
+      { text: "I have three advices for you.", correct: false, review: "Advice does not usually take plural -s in English." },
+      { text: "I have many advice for you.", correct: false, review: "Many is used with countable plural nouns. Advice is uncountable." }
+    ]
+  },
+  {
+    topic: "nouns",
+    tag: "Countable vs. Uncountable nouns",
+    question: "Complete: Can I have ____ orange, please?",
+    options: [
+      { text: "a", correct: false, review: "Orange begins with a vowel sound, so use an." },
+      { text: "an", correct: true, review: "Correct. Orange is a singular countable noun beginning with a vowel sound." },
+      { text: "some", correct: false, review: "Some oranges would mean more than one or an unspecified amount." },
+      { text: "much", correct: false, review: "Much is used with uncountable nouns, not one orange." }
+    ]
+  },
+
+  // Since vs For
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: I have lived in Zagreb ____ 2020.",
+    options: [
+      { text: "for", correct: false, review: "For is used with a period of time, such as for three years." },
+      { text: "since", correct: true, review: "Correct. Since is used with a starting point in time: since 2020." },
+      { text: "during", correct: false, review: "During is used with a noun period, but not in this Present Perfect pattern." },
+      { text: "from", correct: false, review: "From is not the usual word here with Present Perfect." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: She has studied English ____ five years.",
+    options: [
+      { text: "since", correct: false, review: "Since is used with a starting point, such as since 2019." },
+      { text: "for", correct: true, review: "Correct. For is used with a length of time: for five years." },
+      { text: "from", correct: false, review: "From is not the usual word in this Present Perfect sentence." },
+      { text: "at", correct: false, review: "At is used for clock times or places, not for a time period here." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Which sentence is correct?",
+    options: [
+      { text: "I have known him since two months.", correct: false, review: "Two months is a period of time, so use for." },
+      { text: "I have known him for two months.", correct: true, review: "Correct. Two months is a length of time, so use for." },
+      { text: "I have known him for Monday.", correct: false, review: "Monday is a starting point, so use since." },
+      { text: "I know him since two months.", correct: false, review: "With since/for and a connection to now, use Present Perfect." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: We have been friends ____ primary school.",
+    options: [
+      { text: "for", correct: false, review: "Primary school is used here as a starting point, so use since." },
+      { text: "since", correct: true, review: "Correct. Since shows when the friendship started." },
+      { text: "ago", correct: false, review: "Ago is used with Past Simple, not in this sentence." },
+      { text: "last", correct: false, review: "Last does not fit this sentence." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: He has played football ____ he was six.",
+    options: [
+      { text: "for", correct: false, review: "For is used with a time period, not a clause like he was six." },
+      { text: "since", correct: true, review: "Correct. Since can introduce the starting point: since he was six." },
+      { text: "during", correct: false, review: "During does not fit this Present Perfect pattern." },
+      { text: "ago", correct: false, review: "Ago is used with Past Simple, not here." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: They have waited ____ half an hour.",
+    options: [
+      { text: "since", correct: false, review: "Since is used with a starting point, not a period of time." },
+      { text: "for", correct: true, review: "Correct. Half an hour is a length of time, so use for." },
+      { text: "from", correct: false, review: "From is not the usual word with Present Perfect here." },
+      { text: "last", correct: false, review: "Last does not fit before half an hour." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Choose the correct sentence.",
+    options: [
+      { text: "Mia has had this phone since Christmas.", correct: true, review: "Correct. Christmas is a starting point in time, so use since." },
+      { text: "Mia has had this phone for Christmas.", correct: false, review: "Christmas is a starting point here, so use since." },
+      { text: "Mia had this phone since Christmas.", correct: false, review: "With since and a connection to now, use Present Perfect." },
+      { text: "Mia has have this phone since Christmas.", correct: false, review: "After has, the correct past participle is had." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: I haven't eaten anything ____ breakfast.",
+    options: [
+      { text: "for", correct: false, review: "Breakfast is a starting point in time here, so use since." },
+      { text: "since", correct: true, review: "Correct. Since shows the starting point: since breakfast." },
+      { text: "during", correct: false, review: "During does not fit with this Present Perfect sentence." },
+      { text: "from", correct: false, review: "From is not the usual word in this structure." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Complete: Luka has been tired ____ three days.",
+    options: [
+      { text: "since", correct: false, review: "Three days is a period of time, so use for." },
+      { text: "for", correct: true, review: "Correct. Three days is a length of time, so use for." },
+      { text: "ago", correct: false, review: "Ago is used with Past Simple, not in this Present Perfect sentence." },
+      { text: "at", correct: false, review: "At is used for clock times or places, not for a time period here." }
+    ]
+  },
+  {
+    topic: "sincefor",
+    tag: "Since vs. For",
+    question: "Which rule is correct?",
+    options: [
+      { text: "Use since for a length of time.", correct: false, review: "Since is used for the starting point, not the length of time." },
+      { text: "Use for for a starting point.", correct: false, review: "For is used for a period or length of time." },
+      { text: "Use since for a starting point and for for a period of time.", correct: true, review: "Correct. Since tells when it started; for tells how long it lasted." },
+      { text: "Use since and for only with Past Simple.", correct: false, review: "Since and for are very often used with Present Perfect." }
+    ]
+  }
 ];
 
-let activeTopic = "all";
-let currentQuestion = null;
+let currentTopic = "all";
+let questions = [];
+let currentIndex = 0;
 let score = 0;
-let total = 0;
 let answered = false;
+let topicScores = {};
 
+const topicButtons = document.querySelectorAll(".topic-btn");
+const topicTag = document.getElementById("topicTag");
 const questionText = document.getElementById("questionText");
-const topicLabel = document.getElementById("topicLabel");
-const answersEl = document.getElementById("answers");
-const feedbackEl = document.getElementById("feedback");
-const scoreText = document.getElementById("scoreText");
-const bar = document.getElementById("bar");
+const optionsDiv = document.getElementById("options");
+const reviewBox = document.getElementById("reviewBox");
 const nextBtn = document.getElementById("nextBtn");
-const resetBtn = document.getElementById("resetBtn");
+const progressText = document.getElementById("progressText");
+const scoreText = document.getElementById("scoreText");
+const barFill = document.getElementById("barFill");
+const helperText = document.getElementById("helperText");
+const quizCard = document.getElementById("quizCard");
 
-function filteredQuestions() {
-  return activeTopic === "all" ? questions : questions.filter(q => q.topic === activeTopic);
+function shuffle(array) {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
 }
-function pickQuestion() {
-  const list = filteredQuestions();
-  currentQuestion = list[Math.floor(Math.random() * list.length)];
+
+function startQuiz(topic) {
+  currentTopic = topic;
+  questions = topic === "all" ? shuffle(allQuestions) : shuffle(allQuestions.filter(q => q.topic === topic));
+  currentIndex = 0;
+  score = 0;
   answered = false;
-  topicLabel.textContent = currentQuestion.topicName;
-  questionText.textContent = currentQuestion.q;
-  feedbackEl.textContent = "Choose an answer to get feedback.";
-  feedbackEl.className = "feedback";
-  answersEl.innerHTML = "";
-  currentQuestion.answers.forEach((answer) => {
-    const btn = document.createElement("button");
-    btn.className = "answer";
-    btn.textContent = answer.text;
-    btn.addEventListener("click", () => chooseAnswer(btn, answer));
-    answersEl.appendChild(btn);
+  topicScores = {};
+  allQuestions.forEach(q => {
+    if (!topicScores[q.topic]) topicScores[q.topic] = { correct: 0, total: 0 };
   });
+  renderQuestion();
 }
-function chooseAnswer(button, answer) {
+
+function renderQuestion() {
+  answered = false;
+  reviewBox.className = "review";
+  reviewBox.textContent = "";
+  nextBtn.disabled = true;
+  helperText.textContent = "Select one answer.";
+
+  const q = questions[currentIndex];
+  topicTag.textContent = q.tag;
+  questionText.textContent = q.question;
+  optionsDiv.innerHTML = "";
+
+  const shuffledOptions = shuffle(q.options);
+  shuffledOptions.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt.text;
+    btn.addEventListener("click", () => chooseAnswer(btn, opt, q, shuffledOptions));
+    optionsDiv.appendChild(btn);
+  });
+
+  progressText.textContent = `Question ${currentIndex + 1} / ${questions.length}`;
+  scoreText.textContent = `Score: ${score}`;
+  barFill.style.width = `${(currentIndex / questions.length) * 100}%`;
+
+  nextBtn.textContent = currentIndex === questions.length - 1 ? "Show result" : "Next question";
+}
+
+function chooseAnswer(button, option, question, options) {
   if (answered) return;
   answered = true;
-  total++;
-  if (answer.correct) {
-    score++;
+
+  topicScores[question.topic].total += 1;
+
+  const allOptionButtons = document.querySelectorAll(".option");
+  allOptionButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (options[i].correct) btn.classList.add("correct");
+  });
+
+  if (option.correct) {
+    score += 1;
+    topicScores[question.topic].correct += 1;
     button.classList.add("correct");
-    feedbackEl.textContent = "✅ " + answer.feedback;
-    feedbackEl.className = "feedback ok";
+    reviewBox.className = "review correct";
+    helperText.textContent = "Good job. Read the explanation and continue.";
   } else {
     button.classList.add("wrong");
-    feedbackEl.textContent = "❌ " + answer.feedback;
-    feedbackEl.className = "feedback bad";
-    Array.from(answersEl.children).forEach(btn => {
-      const found = currentQuestion.answers.find(a => a.text === btn.textContent);
-      if (found && found.correct) btn.classList.add("correct");
-    });
+    reviewBox.className = "review wrong";
+    helperText.textContent = "Read the explanation and try to remember the rule.";
   }
-  updateScore();
+
+  reviewBox.textContent = option.review;
+  scoreText.textContent = `Score: ${score}`;
+  nextBtn.disabled = false;
+  barFill.style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
 }
-function updateScore() {
-  scoreText.textContent = "Score: " + score + " / " + total;
-  const pct = total === 0 ? 0 : Math.round((score / total) * 100);
-  bar.style.width = pct + "%";
+
+function showResult() {
+  const percent = Math.round((score / questions.length) * 100);
+  let message = "Keep practising. Small steps are progress.";
+  if (percent >= 80) message = "Excellent work. You understand the main rules well.";
+  else if (percent >= 60) message = "Good work. Revise the questions you missed.";
+  else if (percent >= 40) message = "You are learning. Read the explanations again and try once more.";
+
+  const topicLabels = {
+    tenses: "Past Simple vs. Present Perfect",
+    nouns: "Countable vs. Uncountable nouns",
+    sincefor: "Since vs. For"
+  };
+
+  const summaryRows = Object.keys(topicScores)
+    .filter(key => topicScores[key].total > 0)
+    .map(key => {
+      const row = topicScores[key];
+      return `<div class="topic-row"><span>${topicLabels[key]}</span><strong>${row.correct} / ${row.total}</strong></div>`;
+    }).join("");
+
+  quizCard.innerHTML = `
+    <div class="finish">
+      <div class="tag">Quiz finished</div>
+      <h2>Your result</h2>
+      <div class="score-big">${score} / ${questions.length}</div>
+      <p>${message}</p>
+      <div class="topic-summary">${summaryRows}</div>
+      <button class="primary" onclick="startQuiz(currentTopic)">Try again</button>
+      <button class="secondary" onclick="location.reload()">Choose another topic</button>
+    </div>
+  `;
 }
-document.querySelectorAll(".topic").forEach(btn => {
-  if (btn.dataset.topic) {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".topic[data-topic]").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      activeTopic = btn.dataset.topic;
-      pickQuestion();
-    });
+
+nextBtn.addEventListener("click", () => {
+  if (currentIndex < questions.length - 1) {
+    currentIndex += 1;
+    renderQuestion();
+  } else {
+    showResult();
   }
 });
-nextBtn.addEventListener("click", pickQuestion);
-resetBtn.addEventListener("click", () => {
-  score = 0;
-  total = 0;
-  updateScore();
-  feedbackEl.textContent = "Score reset. Choose an answer to continue.";
-  feedbackEl.className = "feedback";
+
+topicButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    topicButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    startQuiz(btn.dataset.topic);
+  });
 });
-pickQuestion();
-updateScore();
+
+startQuiz("all");
 </script>
 </body>
 </html>
